@@ -8,8 +8,10 @@ import {
   TextField,
   Button,
   Link,
+  Alert,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
+import userService from "@/services/userService";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -17,6 +19,7 @@ export default function LoginPage() {
     email: "",
     senha: "",
   });
+  const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -26,10 +29,27 @@ export default function LoginPage() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Aqui você implementará a lógica de login
-    console.log("Dados do formulário:", formData);
+    setError("");
+
+    try {
+      const user = await userService.login(formData.email, formData.senha);
+      if (user) {
+        localStorage.setItem("user", JSON.stringify(user));
+
+        // Redireciona baseado no perfil
+        if (user.perfil === "admin") {
+          router.push("/admin");
+        } else {
+          router.push("/clientes");
+        }
+      } else {
+        setError("Email ou senha inválidos");
+      }
+    } catch (err) {
+      setError("Erro ao fazer login");
+    }
   };
 
   return (
@@ -45,6 +65,11 @@ export default function LoginPage() {
         <Typography component="h1" variant="h5">
           Login
         </Typography>
+        {error && (
+          <Alert severity="error" sx={{ mt: 2, width: "100%" }}>
+            {error}
+          </Alert>
+        )}
         <Box
           component="form"
           onSubmit={handleSubmit}

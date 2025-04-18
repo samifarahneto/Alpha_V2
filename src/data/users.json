@@ -1,0 +1,20 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "nome": "Admin",
+      "email": "admin@alpha.com",
+      "senha": "123456",
+      "perfil": "admin",
+      "dataCriacao": "2024-03-20T00:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "nome": "Sami",
+      "email": "samineto123@gmail.com",
+      "senha": "123456",
+      "perfil": "b2b",
+      "dataCriacao": "2025-04-17T23:06:17.454Z"
+    }
+  ]
+}

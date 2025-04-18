@@ -14,6 +14,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
         flexDirection: "column",
         minHeight: "100vh", // Força a altura do layout para 100% da altura da tela
         position: "relative",
+        width: "100%",
       }}
     >
       {/* Header fixo */}
@@ -24,6 +25,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
         component="main"
         sx={{
           flex: 1,
+          width: "100%",
           marginTop: {
             xs: "56px",
             sm: "64px",
@@ -36,7 +38,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
           flexDirection: "column",
           justifyContent: "flex-start", // Alinha o conteúdo ao topo
           alignItems: "stretch", // Alinha os itens com o tamanho completo (stretch)
-          padding: { xs: 2, sm: 3, md: 4 },
+          padding: { xs: 2, sm: 3, md: 4, lg: 6.25 }, // 6.25 * 8px = 50px
         }}
       >
         {children}

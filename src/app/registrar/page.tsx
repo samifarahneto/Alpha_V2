@@ -8,8 +8,15 @@ import {
   TextField,
   Button,
   Link,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  SelectChangeEvent,
+  Alert,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
+import userService from "@/services/userService";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -18,9 +25,12 @@ export default function RegisterPage() {
     email: "",
     senha: "",
     confirmarSenha: "",
+    perfil: "",
   });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -28,10 +38,40 @@ export default function RegisterPage() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSelectChange = (e: SelectChangeEvent) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name as string]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Aqui você implementará a lógica de registro
-    console.log("Dados do formulário:", formData);
+    setError("");
+    setSuccess("");
+
+    if (formData.senha !== formData.confirmarSenha) {
+      setError("As senhas não coincidem");
+      return;
+    }
+
+    try {
+      const existingUser = await userService.getUserByEmail(formData.email);
+      if (existingUser) {
+        setError("Este email já está cadastrado");
+        return;
+      }
+
+      const { confirmarSenha, ...userData } = formData;
+      await userService.register(userData);
+      setSuccess("Usuário cadastrado com sucesso!");
+      setTimeout(() => {
+        router.push("/login");
+      }, 2000);
+    } catch (err) {
+      setError("Erro ao cadastrar usuário");
+    }
   };
 
   return (
@@ -47,6 +87,16 @@ export default function RegisterPage() {
         <Typography component="h1" variant="h5">
           Criar uma conta
         </Typography>
+        {error && (
+          <Alert severity="error" sx={{ mt: 2, width: "100%" }}>
+            {error}
+          </Alert>
+        )}
+        {success && (
+          <Alert severity="success" sx={{ mt: 2, width: "100%" }}>
+            {success}
+          </Alert>
+        )}
         <Box
           component="form"
           onSubmit={handleSubmit}
@@ -66,7 +116,7 @@ export default function RegisterPage() {
             name="nome"
             autoComplete="name"
             value={formData.nome}
-            onChange={handleChange}
+            onChange={handleInputChange}
           />
           <TextField
             required
@@ -76,7 +126,7 @@ export default function RegisterPage() {
             name="email"
             autoComplete="email"
             value={formData.email}
-            onChange={handleChange}
+            onChange={handleInputChange}
           />
           <TextField
             required
@@ -87,7 +137,7 @@ export default function RegisterPage() {
             id="senha"
             autoComplete="new-password"
             value={formData.senha}
-            onChange={handleChange}
+            onChange={handleInputChange}
           />
           <TextField
             required
@@ -97,8 +147,24 @@ export default function RegisterPage() {
             type="password"
             id="confirmarSenha"
             value={formData.confirmarSenha}
-            onChange={handleChange}
+            onChange={handleInputChange}
           />
+          <FormControl fullWidth>
+            <InputLabel id="perfil-label">Perfil</InputLabel>
+            <Select
+              labelId="perfil-label"
+              id="perfil"
+              name="perfil"
+              value={formData.perfil}
+              label="Perfil"
+              onChange={handleSelectChange}
+            >
+              <MenuItem value="admin">Administrador</MenuItem>
+              <MenuItem value="b2b">B2B</MenuItem>
+              <MenuItem value="b2c">B2C</MenuItem>
+              <MenuItem value="colaborador">Colaborador</MenuItem>
+            </Select>
+          </FormControl>
           <Button
             type="submit"
             fullWidth
