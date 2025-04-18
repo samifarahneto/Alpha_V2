@@ -226,7 +226,7 @@ export default function Header() {
       <Container
         maxWidth={false}
         sx={{
-          px: { xs: 2, sm: 3, md: 4, lg: 12.5 },
+          px: { xs: 2, sm: 3, md: 4, lg: 18.75 },
         }}
       >
         <Toolbar

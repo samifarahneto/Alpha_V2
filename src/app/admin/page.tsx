@@ -26,6 +26,7 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { tableStyles } from "@/styles/tableStyles";
+import PageContainer from "@/components/layout/PageContainer";
 
 interface User {
   id: number;
@@ -115,60 +116,58 @@ export default function AdminPage() {
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Painel Administrativo
-        </Typography>
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
-        {success && (
-          <Alert severity="success" sx={{ mb: 2 }}>
-            {success}
-          </Alert>
-        )}
-        <TableContainer component={Paper} sx={styles.tableContainer}>
-          <Table sx={[styles.table, styles.responsiveTable]}>
-            <TableHead sx={styles.tableHead}>
-              <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Nome</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Perfil</TableCell>
-                <TableCell>Data de Criação</TableCell>
-                <TableCell sx={styles.actionsCell}>Ações</TableCell>
+    <PageContainer>
+      <Typography variant="h4" component="h1" gutterBottom>
+        Painel Administrativo
+      </Typography>
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+      {success && (
+        <Alert severity="success" sx={{ mb: 2 }}>
+          {success}
+        </Alert>
+      )}
+      <TableContainer component={Paper} sx={styles.tableContainer}>
+        <Table sx={styles.table}>
+          <TableHead sx={styles.tableHead}>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Nome</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Perfil</TableCell>
+              <TableCell>Data de Criação</TableCell>
+              <TableCell sx={styles.actionsCell}>Ações</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody sx={styles.tableBody}>
+            {users.map((user) => (
+              <TableRow key={user.id} sx={styles.tableRow}>
+                <TableCell sx={styles.tableCell}>{user.id}</TableCell>
+                <TableCell sx={styles.tableCell}>{user.nome}</TableCell>
+                <TableCell sx={styles.tableCell}>{user.email}</TableCell>
+                <TableCell sx={styles.tableCell}>{user.perfil}</TableCell>
+                <TableCell sx={styles.tableCell}>
+                  {new Date(user.dataCriacao).toLocaleDateString()}
+                </TableCell>
+                <TableCell sx={[styles.tableCell, styles.actionsCell]}>
+                  <Button onClick={() => handleEditUser(user)} sx={{ mr: 1 }}>
+                    Editar
+                  </Button>
+                  <Button
+                    color="error"
+                    onClick={() => handleDeleteUser(user.id)}
+                  >
+                    Excluir
+                  </Button>
+                </TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody sx={styles.tableBody}>
-              {users.map((user) => (
-                <TableRow key={user.id} sx={styles.tableRow}>
-                  <TableCell sx={styles.tableCell}>{user.id}</TableCell>
-                  <TableCell sx={styles.tableCell}>{user.nome}</TableCell>
-                  <TableCell sx={styles.tableCell}>{user.email}</TableCell>
-                  <TableCell sx={styles.tableCell}>{user.perfil}</TableCell>
-                  <TableCell sx={styles.tableCell}>
-                    {new Date(user.dataCriacao).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell sx={[styles.tableCell, styles.actionsCell]}>
-                    <Button onClick={() => handleEditUser(user)} sx={{ mr: 1 }}>
-                      Editar
-                    </Button>
-                    <Button
-                      color="error"
-                      onClick={() => handleDeleteUser(user.id)}
-                    >
-                      Excluir
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Editar Usuário</DialogTitle>
@@ -218,6 +217,6 @@ export default function AdminPage() {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </PageContainer>
   );
 }

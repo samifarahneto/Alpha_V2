@@ -7,7 +7,7 @@ export default function Footer() {
       sx={{
         py: 0,
         px: 2,
-        backgroundColor: "white",
+        backgroundColor: "#EAF2F5",
         borderTop: "1px solid rgba(0, 0, 0, 0.12)",
         height: "50px", // Altura fixada para 50px
         display: "flex",
